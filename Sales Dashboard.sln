@@ -4,10 +4,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.13.35806.99
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sales Dashboard", "Sales Dashboard.csproj", "{4020E55A-3B3A-4CC8-A869-44B07EC19ADC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CC3EB11F-5C1D-4164-8828-F1B22E4A3EEC} = {CC3EB11F-5C1D-4164-8828-F1B22E4A3EEC}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLayer", "DataLayer\DataLayer.csproj", "{294C7AD1-697F-4FBB-8321-AE18B83BFCAA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLayer", "BusinessLayer\BusinessLayer.csproj", "{CC3EB11F-5C1D-4164-8828-F1B22E4A3EEC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{294C7AD1-697F-4FBB-8321-AE18B83BFCAA} = {294C7AD1-697F-4FBB-8321-AE18B83BFCAA}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
