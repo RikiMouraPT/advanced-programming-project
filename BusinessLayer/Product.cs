@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
-using DataLayer;
 
 namespace BusinessLayer
 {
@@ -131,7 +130,27 @@ namespace BusinessLayer
 
         public Product GetProduct(int productId)
         {
-            Product product = DataLayer.GetProduct(productId);
+            Product product = null;
+
+            string name = string.Empty;
+            string category = string.Empty;
+            string brand = string.Empty;
+            string model = string.Empty;
+            int year = 0;
+            decimal buyPrice = 0;
+            decimal sellPrice = 0;
+            bool isSold = false;
+            DateTime dateAdded = DateTime.Now;
+            int sellerId = 0;
+            string error = string.Empty;
+
+            bool result = DataLayer.Product.GetProduct(productId, ref name, ref category, ref brand, ref model,
+                ref year, ref buyPrice, ref sellPrice, ref isSold, ref dateAdded, ref sellerId, out error);
+
+            if (result)
+            {
+                product = new Product(productId, name, category, brand, model, year, (float)buyPrice, (float)sellPrice, isSold, dateAdded, sellerId);
+            }
 
             return product;
         }
