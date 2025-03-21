@@ -1,4 +1,7 @@
 ﻿using BusinessLayer;
+using DataLayer;
+using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
@@ -6,6 +9,20 @@ namespace Sales_Dashboard
 {
     public partial class MainWindow : Window
     {
+
+        #region Properties
+        private EnumCategory category;
+
+        public EnumCategory Category
+        {
+            get { return category; }
+            set { 
+                category = value;
+                this.UpdateValues(category);
+            }
+        }
+
+        #endregion
         public MainWindow()
         {
             InitializeComponent();
@@ -40,12 +57,25 @@ namespace Sales_Dashboard
                 }
             }
         }
-
-        public void GetCollection()
+        public ProductCollection GetCollection()
         {
-            ProductCollection product = Product.GetProductCollection();
+            ProductCollection product = BusinessLayer.Product.GetProductCollection();
+            return product;
+        }
+        public void UpdateValues(EnumCategory category)
+        {
+            ProductCollection product = this.GetCollection();
 
-            this.qntSalesInfoCard.SubTitle = product.Count.ToString();
+            if (category == EnumCategory.Carro)
+            {
+                var result = product.Where(p => p.Category == "Carro").ToList();
+            }
+            else
+            {
+                var result = product.Where(p => p.Category == "Mota").ToList();
+                this.qntSalesInfoCard.SubTitle = result.Count.ToString();
+            }
+
             this.salesInfoCard.SubTitle = product.Count.ToString();
             this.profitInfoCard.SubTitle = product.Count.ToString();
         }
@@ -59,7 +89,7 @@ namespace Sales_Dashboard
             this.secondUserCard.Title = "Vitor Costa";
             this.thirdUserCard.Title = "Ricardo Costa";
 
-            this.GetCollection();
+            this.UpdateValues(EnumCategory.Mota);
 
         }
     }
