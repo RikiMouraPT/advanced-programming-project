@@ -40,5 +40,11 @@ namespace Sales_Dashboard
             }
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.qntSalesInfoCard.SubTitle = "51";
+            this.salesInfoCard.SubTitle = "51";
+            this.profitInfoCard.SubTitle = "51";
+        }
     }
 }
