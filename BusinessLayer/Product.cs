@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using DataLayer;
 
 namespace BusinessLayer
 {
@@ -10,17 +11,17 @@ namespace BusinessLayer
         #region Properties
         /*
         CREATE TABLE [dbo].[Products](
-	    [ProductID] [int] NOT NULL,
-	    [Name] [nvarchar](100) NOT NULL,
-	    [Category] [nvarchar](50) NULL,
-	    [Brand] [nvarchar](50) NULL,
-	    [Model] [nvarchar](50) NULL,
-	    [Year] [int] NULL,
-	    [BuyPrice] [decimal](10, 2) NULL,
-	    [SellPrice] [decimal](10, 2) NULL,
-	    [isSold] [bit] DEFAULT 0 NULL,
-	    [Date] [datetime] DEFAULT GETDATE() NULL,
-	    [SellerID] [int] NULL,
+     [ProductID] [int] NOT NULL,
+     [Name] [nvarchar](100) NOT NULL,
+     [Category] [nvarchar](50) NULL,
+     [Brand] [nvarchar](50) NULL,
+     [Model] [nvarchar](50) NULL,
+     [Year] [int] NULL,
+     [BuyPrice] [decimal](10, 2) NULL,
+     [SellPrice] [decimal](10, 2) NULL,
+     [isSold] [bit] DEFAULT 0 NULL,
+     [Date] [datetime] DEFAULT GETDATE() NULL,
+     [SellerID] [int] NULL,
          */
 
         private int productId;
@@ -130,9 +131,7 @@ namespace BusinessLayer
 
         public Product GetProduct(int productId)
         {
-            Product product = new Product();
-
-            product.GetProduct(productId);
+            Product product = DataLayer.GetProduct(productId);
 
             return product;
         }
@@ -158,8 +157,8 @@ namespace BusinessLayer
         }
 
         // Parameterized Constructor
-        public Product(int productId, string name, string category, 
-            string brand, string model, int year, float buyPrice, 
+        public Product(int productId, string name, string category,
+            string brand, string model, int year, float buyPrice,
             float sellPrice, bool isSold, DateTime date, int sellerId)
         {
             this.productId = productId;
