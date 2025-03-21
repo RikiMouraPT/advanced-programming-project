@@ -10,7 +10,7 @@ namespace DataLayer
     public class Product
     {
         public static bool GetProduct(int productId, ref string name, ref string category, ref string brand, ref string model,
-            ref int year, ref decimal buyPrice, ref decimal sellPrice, ref bool isSold, ref DateTime dateAdded, ref int sellerId, out string error)
+            ref int year, ref float buyPrice, ref float sellPrice, ref bool isSold, ref DateTime dateAdded, ref int sellerId, out string error)
         {
             bool result = false;
             error = string.Empty;
@@ -46,9 +46,9 @@ namespace DataLayer
                     if (!sqlDataReader.IsDBNull(5))
                         year = sqlDataReader.GetInt32(5);
                     if (!sqlDataReader.IsDBNull(6))
-                        buyPrice = sqlDataReader.GetDecimal(6);
+                        buyPrice = sqlDataReader.GetFloat(6);
                     if (!sqlDataReader.IsDBNull(7))
-                        sellPrice = sqlDataReader.GetDecimal(7);
+                        sellPrice = sqlDataReader.GetFloat(7);
                     if (!sqlDataReader.IsDBNull(8))
                         isSold = sqlDataReader.GetBoolean(8);
                     if (!sqlDataReader.IsDBNull(9))
@@ -75,7 +75,7 @@ namespace DataLayer
 
             try
             {
-                string conString = ConfigurationManager.ConnectionStrings["ConString"].ConnectionString;
+                var conString = "Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=SalesDashboard;Data Source=laptop-ricardo;TrustServerCertificate=True";
 
                 SqlConnection sqlConnection = new SqlConnection(conString);
                 sqlConnection.Open();

@@ -10,7 +10,7 @@
                 <TextBlock Text="{Binding ElementName=infoCard,Path=Title}" Style="{StaticResource titleText}"/>
             </StackPanel>
             <TextBlock Text="{Binding ElementName=infoCard,Path=SubTitle}" Style="{StaticResource secondaryText}"/>
-            <Slider Name="slider1" Style="{DynamicResource SliderStyle1}" Margin="0 5 0 0" IsSelectionRangeEnabled="True" Value="{Binding ElementName=infoCard,Path=Amount}" SelectionEnd="{Binding ElementName=slider1, Path=Value}"/>
+            <Slider Name="slider1" Style="{DynamicResource SliderStyle1}" IsEnabled="False" Margin="0 5 0 0" IsSelectionRangeEnabled="True" Value="{Binding ElementName=infoCard,Path=Amount}" SelectionEnd="{Binding ElementName=slider1, Path=Value}"/>
         </StackPanel>
     </Border>
 </UserControl>

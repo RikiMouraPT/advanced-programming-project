@@ -13,6 +13,7 @@ namespace BusinessLayer
         }
 
         public ProductCollection(DataTable dataTable)
+            :this()
         {
             if (dataTable != null)
             {
@@ -26,8 +27,8 @@ namespace BusinessLayer
                     product.Brand = dataRow.Field<string>("Brand");
                     product.Model = dataRow.Field<string>("Model");
                     product.Year = dataRow.Field<int>("Year");
-                    product.BuyPrice = dataRow.Field<float>("BuyPrice");
-                    product.SellPrice = dataRow.Field<float>("SellPrice");
+                    product.BuyPrice = dataRow.Field<double>("BuyPrice");
+                    product.SellPrice = dataRow.Field<double>("SellPrice");
                     product.IsSold = dataRow.Field<bool>("isSold");
                     product.Date = dataRow.Field<DateTime>("Date");
                     product.SellerId = dataRow.Field<int>("SellerID");

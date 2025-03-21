@@ -72,17 +72,17 @@ namespace BusinessLayer
             set { year = value; }
         }
 
-        private float buyPrice;
+        private double buyPrice;
 
-        public float BuyPrice
+        public double BuyPrice
         {
             get { return buyPrice; }
             set { buyPrice = value; }
         }
 
-        private float sellPrice;
+        private double sellPrice;
 
-        public float SellPrice
+        public double SellPrice
         {
             get { return sellPrice; }
             set { sellPrice = value; }
@@ -151,8 +151,8 @@ namespace BusinessLayer
             string brand = string.Empty;
             string model = string.Empty;
             int year = 0;
-            decimal buyPrice = 0;
-            decimal sellPrice = 0;
+            float buyPrice = 0;
+            float sellPrice = 0;
             bool isSold = false;
             DateTime dateAdded = DateTime.Now;
             int sellerId = 0;
@@ -163,7 +163,7 @@ namespace BusinessLayer
 
             if (result)
             {
-                product = new Product(productId, name, category, brand, model, year, (float)buyPrice, (float)sellPrice, isSold, dateAdded, sellerId);
+                product = new Product(productId, name, category, brand, model, year, buyPrice, sellPrice, isSold, dateAdded, sellerId);
             }
 
             return product;

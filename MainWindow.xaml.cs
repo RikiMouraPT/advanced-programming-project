@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using BusinessLayer;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Sales_Dashboard
@@ -40,11 +41,26 @@ namespace Sales_Dashboard
             }
         }
 
+        public void GetCollection()
+        {
+            ProductCollection product = Product.GetProductCollection();
+
+            this.qntSalesInfoCard.SubTitle = product.Count.ToString();
+            this.salesInfoCard.SubTitle = product.Count.ToString();
+            this.profitInfoCard.SubTitle = product.Count.ToString();
+        }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             this.qntSalesInfoCard.SubTitle = "51";
             this.salesInfoCard.SubTitle = "51";
             this.profitInfoCard.SubTitle = "51";
+
+            this.firstUserCard.Title = "Jóse Costa";
+            this.secondUserCard.Title = "Vitor Costa";
+            this.thirdUserCard.Title = "Ricardo Costa";
+
+            this.GetCollection();
+
         }
     }
 }
