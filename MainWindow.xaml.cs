@@ -3,6 +3,7 @@ using DataLayer;
 using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Sales_Dashboard
@@ -69,28 +70,38 @@ namespace Sales_Dashboard
             if (category == EnumCategory.Carro)
             {
                 var result = product.Where(p => p.Category == "Carro").ToList();
+
+
             }
             else
             {
                 var result = product.Where(p => p.Category == "Mota").ToList();
                 this.qntSalesInfoCard.SubTitle = result.Count.ToString();
+                this.salesInfoCard.SubTitle = result.Count.ToString();
+                this.profitInfoCard.SubTitle = product.Count.ToString();
             }
 
-            this.salesInfoCard.SubTitle = product.Count.ToString();
-            this.profitInfoCard.SubTitle = product.Count.ToString();
+
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.qntSalesInfoCard.SubTitle = "51";
-            this.salesInfoCard.SubTitle = "51";
-            this.profitInfoCard.SubTitle = "51";
-
             this.firstUserCard.Title = "Jóse Costa";
             this.secondUserCard.Title = "Vitor Costa";
             this.thirdUserCard.Title = "Ricardo Costa";
+        }
 
-            this.UpdateValues(EnumCategory.Mota);
+        private void ComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            string category = categoryComboBox.SelectedItem.ToString();
 
+            if (category.Contains("Carro"))
+            {
+                this.Category = EnumCategory.Carro;
+            }
+            else
+            {
+                this.Category = EnumCategory.Mota;
+            }
         }
     }
 }
