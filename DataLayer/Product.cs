@@ -7,7 +7,7 @@ using Microsoft.Data.SqlClient;
 
 namespace DataLayer
 {
-    class Products
+    class Product
     {
         public static bool GetProduct(int productId, ref string name, ref string category, ref string brand, ref string model,
             ref int year, ref decimal buyPrice, ref decimal sellPrice, ref bool isSold, ref DateTime dateAdded, ref int sellerId, out string error)
