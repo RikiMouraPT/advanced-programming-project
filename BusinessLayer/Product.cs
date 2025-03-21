@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Text;
 
 namespace BusinessLayer
@@ -119,9 +120,22 @@ namespace BusinessLayer
 
         // Method to list all products
 
-        public Collection<Product> ListProducts()
+        public static DataTable List(out string erro)
         {
-            Collection<Product> products = new Collection<Product>();
+            DataTable dataTable = DataLayer.Product.ListProducts(out erro);
+
+            return dataTable;
+        }
+
+        // Method to get product collection
+
+        public static ProductCollection GetProductCollection()
+        {
+            string erro = string.Empty;
+
+            DataTable dataTable = List(out erro);
+
+            ProductCollection products = new ProductCollection(dataTable);
 
             return products;
         }
