@@ -171,11 +171,11 @@ BEGIN
 END
 GO
 
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ListProduct]') AND type in (N'P', N'PC'))
-DROP PROCEDURE [dbo].[ListProduct]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ListProducts]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[ListProducts]
 GO
 
-CREATE PROCEDURE [dbo].[ListProduct]
+CREATE PROCEDURE [dbo].[ListProducts]
 AS
 BEGIN
     SELECT * FROM [Products]

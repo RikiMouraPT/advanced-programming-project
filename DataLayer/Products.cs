@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
-using Microsoft.Data.SqlClient;
 using System.Configuration;
+using Microsoft.Data.SqlClient;
 
 namespace DataLayer
 {
-    class Catalog
+    class Products
     {
-        public static bool Get(int productId, ref string name, ref string category, ref string brand, ref string model, 
+        public static bool GetProduct(int productId, ref string name, ref string category, ref string brand, ref string model,
             ref int year, ref decimal buyPrice, ref decimal sellPrice, ref bool isSold, ref DateTime dateAdded, ref int sellerId, out string error)
         {
             bool result = false;
@@ -68,7 +68,7 @@ namespace DataLayer
 
             return result;
         }
-        public static DataTable List(out string erro)
+        public static DataTable ListProducts(out string erro)
         {
             DataTable dataTable = null;
             erro = string.Empty;
