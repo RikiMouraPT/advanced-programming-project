@@ -80,7 +80,7 @@ namespace DataLayer
                 SqlConnection sqlConnection = new SqlConnection(conString);
                 sqlConnection.Open();
 
-                SqlCommand sqlCommand = new SqlCommand("ListProduct", sqlConnection);
+                SqlCommand sqlCommand = new SqlCommand("ListProducts", sqlConnection);
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
 
                 SqlDataReader dataReader = sqlCommand.ExecuteReader(System.Data.CommandBehavior.SingleResult);
