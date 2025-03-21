@@ -5,22 +5,22 @@ using System.Text;
 
 namespace BusinessLayer
 {
-    class Product
+    public class Product
     {
         #region Properties
         /*
         CREATE TABLE [dbo].[Products](
-     [ProductID] [int] NOT NULL,
-     [Name] [nvarchar](100) NOT NULL,
-     [Category] [nvarchar](50) NULL,
-     [Brand] [nvarchar](50) NULL,
-     [Model] [nvarchar](50) NULL,
-     [Year] [int] NULL,
-     [BuyPrice] [decimal](10, 2) NULL,
-     [SellPrice] [decimal](10, 2) NULL,
-     [isSold] [bit] DEFAULT 0 NULL,
-     [Date] [datetime] DEFAULT GETDATE() NULL,
-     [SellerID] [int] NULL,
+        [ProductID] [int] NOT NULL,
+        [Name] [nvarchar](100) NOT NULL,
+        [Category] [nvarchar](50) NULL,
+        [Brand] [nvarchar](50) NULL,
+        [Model] [nvarchar](50) NULL,
+        [Year] [int] NULL,
+        [BuyPrice] [decimal](10, 2) NULL,
+        [SellPrice] [decimal](10, 2) NULL,
+        [isSold] [bit] DEFAULT 0 NULL,
+        [Date] [datetime] DEFAULT GETDATE() NULL,
+        [SellerID] [int] NULL,
          */
 
         private int productId;
