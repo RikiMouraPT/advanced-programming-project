@@ -3,33 +3,31 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using System.Data.SqlClient;
-using DotNetEnv;
+using System.Configuration;
 
 namespace DataLayer
 {
     class Catalog
     {
-        #region Metodos
-        public static bool Obter(int id, ref string nome, ref DateTime dataValidade, ref float preco, ref int principioAtivo, out string erro)
+        public static bool Get(int productId, ref string name, ref string category, ref string brand, ref string model, 
+            ref int year, ref decimal buyPrice, ref decimal sellPrice, ref bool isSold, ref DateTime dateAdded, ref int sellerId, out string error)
         {
-            Env.Load();
-            bool resultado = false;
-            erro = string.Empty;
+            bool result = false;
+            error = string.Empty;
 
             try
             {
-                string conString = Env.GetString("DB_CONNECTION_STRING");
+                string conString = ConfigurationManager.ConnectionStrings["ConString"].ConnectionString;
 
                 SqlConnection sqlConnection = new SqlConnection(conString);
                 sqlConnection.Open();
 
-                SqlCommand sqlCommand = new SqlCommand("Medicamento_Obter", sqlConnection);
+                SqlCommand sqlCommand = new SqlCommand("Catalog_Get", sqlConnection);
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
 
-                SqlParameter sqlParameter = new SqlParameter("Id", System.Data.SqlDbType.Int);
+                SqlParameter sqlParameter = new SqlParameter("ProductID", System.Data.SqlDbType.Int);
                 sqlParameter.Direction = System.Data.ParameterDirection.Input;
-                sqlParameter.Value = id;
-
+                sqlParameter.Value = productId;
                 sqlCommand.Parameters.Add(sqlParameter);
 
                 SqlDataReader sqlDataReader = sqlCommand.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
@@ -37,127 +35,40 @@ namespace DataLayer
                 if (sqlDataReader.HasRows)
                 {
                     sqlDataReader.Read();
-                    if (!sqlDataReader.IsDBNull(1))
-                    {
-                        nome = sqlDataReader.GetString(1);
-                    }
-                    if (!sqlDataReader.IsDBNull(2))
-                    {
-                        dataValidade = sqlDataReader.GetDateTime(2);
-                    }
-                    if (!sqlDataReader.IsDBNull(3))
-                    {
-                        preco = sqlDataReader.GetFloat(3);
-                    }
-                    if (!sqlDataReader.IsDBNull(4))
-                    {
-                        principioAtivo = sqlDataReader.GetInt32(4);
-                    }
 
-                    resultado = true;
+                    if (!sqlDataReader.IsDBNull(1))
+                        name = sqlDataReader.GetString(1);
+                    if (!sqlDataReader.IsDBNull(2))
+                        category = sqlDataReader.GetString(2);
+                    if (!sqlDataReader.IsDBNull(3))
+                        brand = sqlDataReader.GetString(3);
+                    if (!sqlDataReader.IsDBNull(4))
+                        model = sqlDataReader.GetString(4);
+                    if (!sqlDataReader.IsDBNull(5))
+                        year = sqlDataReader.GetInt32(5);
+                    if (!sqlDataReader.IsDBNull(6))
+                        buyPrice = sqlDataReader.GetDecimal(6);
+                    if (!sqlDataReader.IsDBNull(7))
+                        sellPrice = sqlDataReader.GetDecimal(7);
+                    if (!sqlDataReader.IsDBNull(8))
+                        isSold = sqlDataReader.GetBoolean(8);
+                    if (!sqlDataReader.IsDBNull(9))
+                        dateAdded = sqlDataReader.GetDateTime(9);
+                    if (!sqlDataReader.IsDBNull(10))
+                        sellerId = sqlDataReader.GetInt32(10);
+
+                    result = true;
                 }
 
                 sqlConnection.Close();
             }
             catch (Exception ex)
             {
-                erro = ex.Message;
+                error = ex.Message;
             }
 
-            return resultado;
+            return result;
         }
-
-        public static bool Gravar(int id, string nome, DateTime dataValidade, float preco, int principioAtivo, out string erro)
-        {
-            bool resultado = false;
-            erro = string.Empty;
-
-            try
-            {
-                SqlConnection sqlConnection = new SqlConnection(Properties.Settings.Default.ConnectionString);
-
-                sqlConnection.Open();
-
-                SqlCommand sqlCommand = new SqlCommand("Medicamento_Gravar", sqlConnection);
-                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
-
-                SqlParameter sqlParameter = new SqlParameter("Id", System.Data.SqlDbType.Int);
-                sqlParameter.Direction = System.Data.ParameterDirection.Input;
-                sqlParameter.Value = id;
-
-                sqlCommand.Parameters.Add(sqlParameter);
-
-                sqlParameter = new SqlParameter("Nome", System.Data.SqlDbType.NVarChar, 90);
-                sqlParameter.Direction = System.Data.ParameterDirection.Input;
-                sqlParameter.Value = nome;
-
-                sqlCommand.Parameters.Add(sqlParameter);
-
-                sqlParameter = new SqlParameter("DataValidade", System.Data.SqlDbType.DateTime);
-                sqlParameter.Direction = System.Data.ParameterDirection.Input;
-                sqlParameter.Value = dataValidade;
-
-                sqlCommand.Parameters.Add(sqlParameter);
-
-                sqlParameter = new SqlParameter("Preco", System.Data.SqlDbType.Float);
-                sqlParameter.Direction = System.Data.ParameterDirection.Input;
-                sqlParameter.Value = preco;
-
-                sqlCommand.Parameters.Add(sqlParameter);
-
-                sqlParameter = new SqlParameter("PrincipioAtivo", System.Data.SqlDbType.Int);
-                sqlParameter.Direction = System.Data.ParameterDirection.Input;
-                sqlParameter.Value = principioAtivo;
-
-                sqlCommand.Parameters.Add(sqlParameter);
-
-                sqlCommand.ExecuteNonQuery();
-
-                sqlConnection.Close();
-
-                resultado = true;
-            }
-            catch (Exception ex)
-            {
-                erro = ex.Message;
-            }
-
-            return resultado;
-        }
-
-        public static bool Eliminar(int id, out string erro)
-        {
-            bool resultado = false;
-            erro = string.Empty;
-
-            try
-            {
-                SqlConnection sqlConnection = new SqlConnection(Properties.Settings.Default.ConnectionString);
-                sqlConnection.Open();
-
-                SqlCommand sqlCommand = new SqlCommand("Medicamento_Eliminar", sqlConnection);
-                sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
-
-                SqlParameter sqlParameter = new SqlParameter("Id", System.Data.SqlDbType.Int);
-                sqlParameter.Direction = System.Data.ParameterDirection.Input;
-                sqlParameter.Value = id;
-
-                sqlCommand.Parameters.Add(sqlParameter);
-
-                sqlCommand.ExecuteNonQuery();
-
-                sqlConnection.Close();
-
-                resultado = true;
-            }
-            catch (Exception ex)
-            {
-                erro = ex.Message;
-            }
-
-            return resultado;
-        }
-
         public static DataTable Listar(out string erro)
         {
             DataTable dataTable = null;
@@ -165,10 +76,12 @@ namespace DataLayer
 
             try
             {
-                SqlConnection sqlConnection = new SqlConnection(Properties.Settings.Default.ConnectionString);
+                string conString = ConfigurationManager.ConnectionStrings["ConString"].ConnectionString;
+
+                SqlConnection sqlConnection = new SqlConnection(conString);
                 sqlConnection.Open();
 
-                SqlCommand sqlCommand = new SqlCommand("Medicamento_Listar", sqlConnection);
+                SqlCommand sqlCommand = new SqlCommand("Catalog_List", sqlConnection);
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
 
                 SqlDataReader dataReader = sqlCommand.ExecuteReader(System.Data.CommandBehavior.SingleResult);
@@ -185,6 +98,5 @@ namespace DataLayer
             }
             return dataTable;
         }
-        #endregion
     }
 }
