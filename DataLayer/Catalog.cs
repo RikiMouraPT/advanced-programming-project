@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Configuration;
 
 namespace DataLayer
@@ -18,11 +18,10 @@ namespace DataLayer
             try
             {
                 string conString = ConfigurationManager.ConnectionStrings["ConString"].ConnectionString;
-
                 SqlConnection sqlConnection = new SqlConnection(conString);
                 sqlConnection.Open();
 
-                SqlCommand sqlCommand = new SqlCommand("Catalog_Get", sqlConnection);
+                SqlCommand sqlCommand = new SqlCommand("GetProduct", sqlConnection);
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
 
                 SqlParameter sqlParameter = new SqlParameter("ProductID", System.Data.SqlDbType.Int);
@@ -69,7 +68,7 @@ namespace DataLayer
 
             return result;
         }
-        public static DataTable Listar(out string erro)
+        public static DataTable List(out string erro)
         {
             DataTable dataTable = null;
             erro = string.Empty;
@@ -81,7 +80,7 @@ namespace DataLayer
                 SqlConnection sqlConnection = new SqlConnection(conString);
                 sqlConnection.Open();
 
-                SqlCommand sqlCommand = new SqlCommand("Catalog_List", sqlConnection);
+                SqlCommand sqlCommand = new SqlCommand("ListProduct", sqlConnection);
                 sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
 
                 SqlDataReader dataReader = sqlCommand.ExecuteReader(System.Data.CommandBehavior.SingleResult);
