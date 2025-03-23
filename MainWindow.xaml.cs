@@ -20,7 +20,7 @@ namespace Sales_Dashboard
             set { 
                 category = value;
                 this.UpdateInfoCardValues(category);
-                //this.UpdateUserCardValues(category);
+                this.UpdateUserCardValues(category);
             }
         }
 
@@ -69,47 +69,108 @@ namespace Sales_Dashboard
             switch (category)
             {
                 case EnumCategory.Undefined:
+                    UpdateInfoCard(products, "Undefined");
                     break;
                 case EnumCategory.Car:
-                    UpdateInfoCard(products, "Carro");
+                    UpdateInfoCard(products, "Car");
                     break;
                 case EnumCategory.Motorcycle:
-                    UpdateInfoCard(products, "Mota");
+                    UpdateInfoCard(products, "Motorcycle");
                     break;
             }
         }
         private void UpdateInfoCard(ProductCollection products, string category)
         {
-            int soldCount =       products.Where(p => p.Category == category && p.IsSold).Count();
-            double sumSellPrice = products.Where(p => p.Category == category && p.IsSold).Sum(p => p.SellPrice);
-            double sumBuyPrice =  products.Where(p => p.Category == category && p.IsSold).Sum(p => p.BuyPrice);
-            
-            this.qntSalesInfoCard.SubTitle =      soldCount.ToString();
-            this.salesInfoCard.SubTitle =  "$" +  sumSellPrice.ToString();
-            this.profitInfoCard.SubTitle = "$" + (sumSellPrice - sumBuyPrice).ToString();
+            if (qntSalesInfoCard == null || salesInfoCard == null || profitInfoCard == null)
+                return;
+            //TODO: Implementar a lógica para preencher os UserCards com os dados dos Sellers da Motorcycle+Car
+            if (category == "Undefined")
+            {
+                this.qntSalesInfoCard.SubTitle = "Null";
+                this.salesInfoCard.SubTitle = "Null";
+                this.profitInfoCard.SubTitle = "Null";
+            }
+            else
+            {
+                int soldCount = products.Where(p => p.Category == category && p.IsSold).Count();
+                double sumSellPrice = products.Where(p => p.Category == category && p.IsSold).Sum(p => p.SellPrice);
+                double sumBuyPrice = products.Where(p => p.Category == category && p.IsSold).Sum(p => p.BuyPrice);
+
+                this.qntSalesInfoCard.SubTitle = soldCount.ToString();
+                this.salesInfoCard.SubTitle = "$" + sumSellPrice.ToString();
+                this.profitInfoCard.SubTitle = "$" + (sumSellPrice - sumBuyPrice).ToString();
+            }
         }
         #endregion
         #region UserCards
         public void UpdateUserCardValues(EnumCategory category)
         {
             SellerCollection sellers = BusinessLayer.SellerCollection.GetCollection();
+            ProductCollection products = BusinessLayer.ProductCollection.GetCollection();
 
             switch (category)
             {
                 case EnumCategory.Undefined:
+                    UpdateUserCard(sellers, products, "Undefined");
                     break;
                 case EnumCategory.Car:
-                    UpdateUserCard(sellers, "Carro");
+                    UpdateUserCard(sellers, products, "Car");
                     break;
                 case EnumCategory.Motorcycle:
-                    UpdateUserCard(sellers, "Mota");
+                    UpdateUserCard(sellers, products, "Motorcycle");
                     break;
             }
         }
-        private void UpdateUserCard(SellerCollection sellers, string category)
+        private void UpdateUserCard(SellerCollection sellers, ProductCollection products, string category)
         {
+            if (firstUserCard == null || secondUserCard == null || thirdUserCard == null)
+                return;
+            //TODO: Implementar a lógica para preencher os UserCards com os dados dos Sellers da Motorcycle+Car
+            if (category == "Undefined")
+            {
+                this.firstUserCard.Title = "Null";
+                this.firstUserCard.UpPrice = "Null";
+                this.firstUserCard.DownPrice = "Null";
 
+                this.secondUserCard.Title = "Null";
+                this.secondUserCard.UpPrice = "Null";
+                this.secondUserCard.DownPrice = "Null";
 
+                this.thirdUserCard.Title = "Null";
+                this.thirdUserCard.UpPrice = "Null";
+                this.thirdUserCard.DownPrice = "Null";
+                return;
+            }
+
+            //Pega os top 3 sellers da categoria no parametro
+            var topSellers = products
+                .Where(p => p.Category == category && p.IsSold)
+                .GroupBy(p => p.SellerId)
+                .OrderByDescending(g => g.Sum(p => p.SellPrice))
+                .Select(g => new
+                {
+                    SellerName = sellers.Where(s => s.SellerId == g.Key).Select(s => s.Name).FirstOrDefault(), //FirstOrDefault() para que retorne uma string apenas e não uma lista
+                    TotalSellValue = g.Sum(p => p.SellPrice),
+                    TotalProfitValue = g.Sum(p => p.SellPrice - p.BuyPrice)
+                })
+                .Take(3)
+                .ToList();
+
+            UserCard[] userCards = { firstUserCard, secondUserCard, thirdUserCard };
+            for (int i = 0; i < userCards.Length; i++)
+            {
+                UpdateSingleUserCard(
+                    userCards[i],
+                    topSellers[i].SellerName,
+                    topSellers[i].TotalSellValue,
+                    topSellers[i].TotalProfitValue);
+            }
+        }
+        private void UpdateSingleUserCard(UserCard userCard, string sellerName, double upPrice, double downPrice)
+        {
+            userCard.Title = sellerName;
+            userCard.UpPrice = upPrice.ToString("C2");
+            userCard.DownPrice = downPrice.ToString("C2");
         }
         #endregion
         #endregion
@@ -122,7 +183,7 @@ namespace Sales_Dashboard
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
+            this.Category = EnumCategory.Undefined;
         }
 
         private void ComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
