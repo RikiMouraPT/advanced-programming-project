@@ -92,7 +92,7 @@ namespace Sales_Dashboard
             this.profitInfoCard.SubTitle = "$" + (sumSellPrice - sumBuyPrice).ToString();
         }
 
-        private void UpdateSellerInfoCardValues()
+        /*private void UpdateSellerInfoCardValues()
         {
             string error = string.Empty;
             SellerCollection sellers = BusinessLayer.Seller.GetSellerCollection();
@@ -107,16 +107,19 @@ namespace Sales_Dashboard
             {
                 MessageBox.Show("Erro ao carregar vendedores", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
+        }*/
 
-        private void UpdateUserCard(UserCard card, BusinessLayer.Seller seller)
+        private void UpdateUserInfoCard(SellerCollection seller)
         {
-            card.Title = seller.Name;
+            this.firstUserCard.Title = seller.Where(p => p.SellerId == 0).ToString();
+            this.secondUserCard.Title = seller.Where(p => p.SellerId == 1).ToString();
+            this.thirdUserCard.Title = seller.Where(p => p.SellerId == 2).ToString();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            UpdateSellerInfoCardValues();
+            SellerCollection sellers = BusinessLayer.Seller.GetSellerCollection();
+            UpdateUserInfoCard(sellers);
         }
 
         private void ComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
