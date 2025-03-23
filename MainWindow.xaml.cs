@@ -19,7 +19,7 @@ namespace Sales_Dashboard
             get { return category; }
             set { 
                 category = value;
-                this.UpdateValues(category);
+                this.UpdateInfoCardValues(category);
             }
         }
 
@@ -63,26 +63,36 @@ namespace Sales_Dashboard
             ProductCollection product = BusinessLayer.Product.GetProductCollection();
             return product;
         }
-        public void UpdateValues(EnumCategory category)
+        public void UpdateInfoCardValues(EnumCategory category)
         {
             ProductCollection product = this.GetCollection();
 
-            if (category == EnumCategory.Carro)
+            switch (category)
             {
-                var result = product.Where(p => p.Category == "Carro").ToList();
-
-
+                case EnumCategory.Undefined:
+                    break;
+                case EnumCategory.Car:
+                    UpdateInfoCard(product, "Carro");
+                    break;
+                case EnumCategory.Motorcycle:
+                    UpdateInfoCard(product, "Mota");
+                    break;
             }
-            else
-            {
-                var result = product.Where(p => p.Category == "Mota").ToList();
-                this.qntSalesInfoCard.SubTitle = result.Count.ToString();
-                this.salesInfoCard.SubTitle = result.Count.ToString();
-                this.profitInfoCard.SubTitle = product.Count.ToString();
-            }
-
-
         }
+
+        private void UpdateInfoCard(ProductCollection product, string category)
+        {
+            double sumSellPrice = product.Where(p => p.Category == category && p.IsSold).Sum(p => p.SellPrice);
+            double sumBuyPrice = product.Where(p => p.Category == category && p.IsSold).Sum(p => p.BuyPrice);
+            int soldCount = product.Count(p => p.Category == category && p.IsSold);
+
+            this.qntSalesInfoCard.SubTitle = soldCount.ToString();
+            this.salesInfoCard.SubTitle = "$" + product.Where(p => p.Category == category).Sum(p => p.SellPrice).ToString();
+            this.profitInfoCard.SubTitle = "$" + (sumSellPrice - sumBuyPrice).ToString();
+        }
+
+
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             this.firstUserCard.Title = "Jóse Costa";
@@ -94,14 +104,23 @@ namespace Sales_Dashboard
         {
             string category = categoryComboBox.SelectedItem.ToString();
 
-            if (category.Contains("Carro"))
+            if (category.Contains("Car"))
             {
-                this.Category = EnumCategory.Carro;
+                this.Category = EnumCategory.Car;
             }
             else
             {
-                this.Category = EnumCategory.Mota;
+                this.Category = EnumCategory.Motorcycle;
             }
+        }
+
+        private void UpdateSellerListValues()
+        {
+            /*SellerCollection seller = BusinessLayer.Seller.GetSeller();
+
+            this.firstUserCard.Title = users[0].Name;
+            this.secondUserCard.Title = users[1].Name;
+            this.thirdUserCard.Title = users[2].Name;*/
         }
     }
 }

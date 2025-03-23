@@ -75,7 +75,11 @@ namespace DataLayer
 
             try
             {
-                var conString = "Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=SalesDashboard;Data Source=laptop-ricardo;TrustServerCertificate=True";
+                //var conString = "Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=SalesDashboard;Data Source=laptop-ricardo;TrustServerCertificate=True";
+                var conString = "Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=ProjetoPA;Data Source=LT-VROCHA;TrustServerCertificate=True";
+
+
+
 
                 SqlConnection sqlConnection = new SqlConnection(conString);
                 sqlConnection.Open();

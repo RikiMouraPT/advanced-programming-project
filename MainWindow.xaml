@@ -158,9 +158,10 @@
                     <!--Search Textbox-->
                     <Grid Width="300" HorizontalAlignment="Right">
 
-                        <ComboBox x:Name="categoryComboBox" Width="200" Height="30" Margin="10" SelectionChanged="ComboBox_SelectionChanged">
-                            <ComboBoxItem Content="Carro"/>
-                            <ComboBoxItem Content="Mota"/>
+                        <ComboBox x:Name="categoryComboBox" Width="200" Height="30" Margin="10" SelectionChanged="ComboBox_SelectionChanged" SelectedIndex="0">
+                            <ComboBoxItem Content="Undefined"/>
+                            <ComboBoxItem Content="Car"/>
+                            <ComboBoxItem Content="Motorcycle"/>
                         </ComboBox>
                     </Grid>
 

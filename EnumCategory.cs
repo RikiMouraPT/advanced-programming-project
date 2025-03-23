@@ -8,7 +8,8 @@ namespace Sales_Dashboard
 {
     public enum EnumCategory
     {
-        Carro = 0,
-        Mota = 1
+        Undefined = 0,
+        Car = 1,
+        Motorcycle = 2
     }
 }

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BusinessLayer
 {
-    class SellerCollection : Collection<Seller>
+    public class SellerCollection : Collection<Seller>
     {
         public SellerCollection()
         {
