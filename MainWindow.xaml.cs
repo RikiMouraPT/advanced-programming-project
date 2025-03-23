@@ -1,5 +1,6 @@
 ﻿using BusinessLayer;
 using DataLayer;
+using Sales_Dashboard.UserControls;
 using System;
 using System.Linq;
 using System.Windows;
@@ -91,13 +92,31 @@ namespace Sales_Dashboard
             this.profitInfoCard.SubTitle = "$" + (sumSellPrice - sumBuyPrice).ToString();
         }
 
+        private void UpdateSellerInfoCardValues()
+        {
+            string error = string.Empty;
+            SellerCollection sellers = BusinessLayer.Seller.GetSellerCollection();
 
+            if (sellers != null && sellers.Count > 0)
+            {
+                UpdateUserCard(firstUserCard, sellers[0]);
+                UpdateUserCard(secondUserCard, sellers[1]);
+                UpdateUserCard(thirdUserCard, sellers[2]);
+            }
+            else
+            {
+                MessageBox.Show("Erro ao carregar vendedores", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void UpdateUserCard(UserCard card, BusinessLayer.Seller seller)
+        {
+            card.Title = seller.Name;
+        }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.firstUserCard.Title = "Jóse Costa";
-            this.secondUserCard.Title = "Vitor Costa";
-            this.thirdUserCard.Title = "Ricardo Costa";
+            UpdateSellerInfoCardValues();
         }
 
         private void ComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -116,15 +135,6 @@ namespace Sales_Dashboard
             {
                 this.Category = EnumCategory.Motorcycle;
             }
-        }
-
-        private void UpdateSellerListValues()
-        {
-            /*SellerCollection seller = BusinessLayer.Seller.GetSeller();
-
-            this.firstUserCard.Title = users[0].Name;
-            this.secondUserCard.Title = users[1].Name;
-            this.thirdUserCard.Title = users[2].Name;*/
         }
     }
 }

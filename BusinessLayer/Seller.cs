@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 
 namespace BusinessLayer
 {
@@ -51,6 +52,25 @@ namespace BusinessLayer
         #endregion
 
         #region Methods
+
+        // Method to get all Sellers
+        public static DataTable List(out string erro)
+        {
+            DataTable dataTable = DataLayer.Seller.ListSellers(out erro);
+
+            return dataTable;
+        }
+
+        public static SellerCollection GetSellerCollection()
+        {
+            string erro = string.Empty;
+
+            DataTable dataTable = List(out erro);
+
+            SellerCollection sellers = new SellerCollection(dataTable);
+
+            return sellers;
+        }
 
         // Method to get sellers by ID
 
