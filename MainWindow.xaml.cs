@@ -69,7 +69,6 @@ namespace Sales_Dashboard
             switch (category)
             {
                 case EnumCategory.Undefined:
-                    UpdateInfoCard(products, "Undefined");
                     break;
                 case EnumCategory.Car:
                     UpdateInfoCard(products, "Carro");
