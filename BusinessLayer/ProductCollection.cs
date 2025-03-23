@@ -8,6 +8,7 @@ namespace BusinessLayer
 {
     public class ProductCollection : Collection<Product>
     {
+        #region Constructors
         public ProductCollection()
         {
         }
@@ -37,5 +38,20 @@ namespace BusinessLayer
                 }
             }
         }
+        #endregion
+
+        #region Methods
+        // Method to get product collection
+        public static ProductCollection GetCollection()
+        {
+            string erro = string.Empty;
+
+            DataTable dataTable = DataLayer.Product.List(out erro);
+
+            ProductCollection products = new ProductCollection(dataTable);
+
+            return products;
+        }
+        #endregion
     }
 }

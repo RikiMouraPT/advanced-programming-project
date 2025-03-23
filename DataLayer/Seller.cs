@@ -7,7 +7,7 @@ namespace DataLayer
 {
     public class Seller
     {
-        public static bool GetSeller(int sellerId, ref string name, out string error)
+        public static bool Get(int sellerId, ref string name, out string error)
         {
             bool result = false;
             error = string.Empty;
@@ -49,7 +49,7 @@ namespace DataLayer
             return result;
         }
 
-        public static DataTable ListSellers(out string erro)
+        public static DataTable List(out string erro)
         {
             DataTable dataTable = null;
             erro = string.Empty;

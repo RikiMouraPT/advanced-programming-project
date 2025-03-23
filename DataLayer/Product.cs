@@ -9,7 +9,7 @@ namespace DataLayer
 {
     public class Product
     {
-        public static bool GetProduct(int productId, ref string name, ref string category, ref string brand, ref string model,
+        public static bool Get(int productId, ref string name, ref string category, ref string brand, ref string model,
             ref int year, ref float buyPrice, ref float sellPrice, ref bool isSold, ref DateTime dateAdded, ref int sellerId, out string error)
         {
             bool result = false;
@@ -69,7 +69,7 @@ namespace DataLayer
 
             return result;
         }
-        public static DataTable ListProducts(out string erro)
+        public static DataTable List(out string erro)
         {
             DataTable dataTable = null;
             erro = string.Empty;

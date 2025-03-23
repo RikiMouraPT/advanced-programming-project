@@ -5,7 +5,6 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using DotNetEnv;
 
 namespace Sales_Dashboard
 {
@@ -16,7 +15,6 @@ namespace Sales_Dashboard
     {
         public App()
         {
-            Env.Load();
         }
     }
 }

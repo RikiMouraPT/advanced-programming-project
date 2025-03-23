@@ -52,29 +52,8 @@ namespace BusinessLayer
         #endregion
 
         #region Methods
-
-        // Method to get all Sellers
-        public static DataTable List(out string erro)
-        {
-            DataTable dataTable = DataLayer.Seller.ListSellers(out erro);
-
-            return dataTable;
-        }
-
-        public static SellerCollection GetSellerCollection()
-        {
-            string erro = string.Empty;
-
-            DataTable dataTable = List(out erro);
-
-            SellerCollection sellers = new SellerCollection(dataTable);
-
-            return sellers;
-        }
-
-        // Method to get sellers by ID
-
-        public Seller GetSeller(int sellerId)
+        // Method to get one seller by ID
+        public Seller Get(int sellerId)
         {
             Seller seller = null;
 
@@ -82,7 +61,7 @@ namespace BusinessLayer
             string error = string.Empty;
 
 
-            bool result = DataLayer.Seller.GetSeller(sellerId, ref name, out error);
+            bool result = DataLayer.Seller.Get(sellerId, ref name, out error);
 
             if (result)
             {
@@ -91,7 +70,6 @@ namespace BusinessLayer
 
             return seller;
         }
-
         #endregion
     }
 }

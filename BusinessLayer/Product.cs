@@ -8,6 +8,44 @@ namespace BusinessLayer
 {
     public class Product
     {
+        #region Constructors
+
+        // Default Constructor
+        public Product()
+        {
+            productId = 0;
+            Name = string.Empty;
+            category = string.Empty;
+            brand = string.Empty;
+            model = string.Empty;
+            year = 0;
+            buyPrice = 0;
+            sellPrice = 0;
+            isSold = false;
+            date = DateTime.Now;
+            sellerId = 0;
+        }
+
+        // Parameterized Constructor
+        public Product(int productId, string name, string category,
+            string brand, string model, int year, float buyPrice,
+            float sellPrice, bool isSold, DateTime date, int sellerId)
+        {
+            this.productId = productId;
+            this.name = name;
+            this.category = category;
+            this.brand = brand;
+            this.model = model;
+            this.year = year;
+            this.buyPrice = buyPrice;
+            this.sellPrice = sellPrice;
+            this.isSold = isSold;
+            this.date = date;
+            this.sellerId = sellerId;
+        }
+
+        #endregion
+
         #region Properties
         /*
         CREATE TABLE [dbo].[Products](
@@ -117,32 +155,8 @@ namespace BusinessLayer
         #endregion
 
         #region Methods
-
-        // Method to list all products
-
-        public static DataTable List(out string erro)
-        {
-            DataTable dataTable = DataLayer.Product.ListProducts(out erro);
-
-            return dataTable;
-        }
-
-        // Method to get product collection
-
-        public static ProductCollection GetProductCollection()
-        {
-            string erro = string.Empty;
-
-            DataTable dataTable = List(out erro);
-
-            ProductCollection products = new ProductCollection(dataTable);
-
-            return products;
-        }
-
-        // Method to get product by ID
-
-        public Product GetProduct(int productId)
+        // Method to get one product by ID
+        public Product Get(int productId)
         {
             Product product = null;
 
@@ -158,7 +172,7 @@ namespace BusinessLayer
             int sellerId = 0;
             string error = string.Empty;
 
-            bool result = DataLayer.Product.GetProduct(productId, ref name, ref category, ref brand, ref model,
+            bool result = DataLayer.Product.Get(productId, ref name, ref category, ref brand, ref model,
                 ref year, ref buyPrice, ref sellPrice, ref isSold, ref dateAdded, ref sellerId, out error);
 
             if (result)
@@ -168,45 +182,8 @@ namespace BusinessLayer
 
             return product;
         }
-
         #endregion
 
-        #region Constructors
-
-        // Default Constructor
-        public Product()
-        {
-            productId = 0;
-            Name = string.Empty;
-            category = string.Empty;
-            brand = string.Empty;
-            model = string.Empty;
-            year = 0;
-            buyPrice = 0;
-            sellPrice = 0;
-            isSold = false;
-            date = DateTime.Now;
-            sellerId = 0;
-        }
-
-        // Parameterized Constructor
-        public Product(int productId, string name, string category,
-            string brand, string model, int year, float buyPrice,
-            float sellPrice, bool isSold, DateTime date, int sellerId)
-        {
-            this.productId = productId;
-            this.name = name;
-            this.category = category;
-            this.brand = brand;
-            this.model = model;
-            this.year = year;
-            this.buyPrice = buyPrice;
-            this.sellPrice = sellPrice;
-            this.isSold = isSold;
-            this.date = date;
-            this.sellerId = sellerId;
-        }
-
-        #endregion
+        
     }
 }

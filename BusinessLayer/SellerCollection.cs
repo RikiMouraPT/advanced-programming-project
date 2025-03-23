@@ -8,6 +8,7 @@ namespace BusinessLayer
 {
     public class SellerCollection : Collection<Seller>
     {
+        #region Constructors
         public SellerCollection()
         {
         }
@@ -28,5 +29,20 @@ namespace BusinessLayer
                 }
             }
         }
+        #endregion
+
+        #region Methods
+        // Method to get sellers collection
+        public static SellerCollection GetCollection()
+        {
+            string erro = string.Empty;
+
+            DataTable dataTable = DataLayer.Seller.List(out erro);
+
+            SellerCollection sellers = new SellerCollection(dataTable);
+
+            return sellers;
+        }
+        #endregion
     }
 }
