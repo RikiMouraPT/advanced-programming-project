@@ -14,7 +14,8 @@ namespace DataLayer
 
             try
             {
-                string conString = ConfigurationManager.ConnectionStrings["ConString"].ConnectionString;
+                string conString = ConfigurationManager.AppSettings["ConString"];
+
                 SqlConnection sqlConnection = new SqlConnection(conString);
                 sqlConnection.Open();
 
@@ -55,7 +56,7 @@ namespace DataLayer
 
             try
             {
-                string conString = ConfigurationManager.ConnectionStrings["ConString"].ConnectionString;
+                string conString = ConfigurationManager.AppSettings["ConString"];
 
                 SqlConnection sqlConnection = new SqlConnection(conString);
                 sqlConnection.Open();

@@ -17,7 +17,8 @@ namespace DataLayer
 
             try
             {
-                string conString = ConfigurationManager.ConnectionStrings["ConString"].ConnectionString;
+                string conString = ConfigurationManager.AppSettings["ConString"];
+
                 SqlConnection sqlConnection = new SqlConnection(conString);
                 sqlConnection.Open();
 
@@ -76,10 +77,9 @@ namespace DataLayer
             try
             {
                 //var conString = "Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=SalesDashboard;Data Source=laptop-ricardo;TrustServerCertificate=True";
-                var conString = "Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=ProjetoPA;Data Source=LT-VROCHA;TrustServerCertificate=True";
+                //var conString = "Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=ProjetoPA;Data Source=LT-VROCHA;TrustServerCertificate=True";
 
-
-
+                string conString = ConfigurationManager.AppSettings["ConString"];
 
                 SqlConnection sqlConnection = new SqlConnection(conString);
                 sqlConnection.Open();
