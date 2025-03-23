@@ -84,7 +84,7 @@ namespace Sales_Dashboard
         {
             double sumSellPrice = product.Where(p => p.Category == category && p.IsSold).Sum(p => p.SellPrice);
             double sumBuyPrice = product.Where(p => p.Category == category && p.IsSold).Sum(p => p.BuyPrice);
-            int soldCount = product.Count(p => p.Category == category && p.IsSold);
+            int soldCount = product.Where(p => p.Category == category && p.IsSold).ToList().Count();
 
             this.qntSalesInfoCard.SubTitle = soldCount.ToString();
             this.salesInfoCard.SubTitle = "$" + product.Where(p => p.Category == category).Sum(p => p.SellPrice).ToString();
@@ -104,11 +104,15 @@ namespace Sales_Dashboard
         {
             string category = categoryComboBox.SelectedItem.ToString();
 
-            if (category.Contains("Car"))
+            if (category.Contains("Undefined"))
+            {
+                this.Category = EnumCategory.Undefined;
+            }
+            else if (category.Contains("Car"))
             {
                 this.Category = EnumCategory.Car;
             }
-            else
+            else if (category.Contains("Motorcycle"))
             {
                 this.Category = EnumCategory.Motorcycle;
             }
