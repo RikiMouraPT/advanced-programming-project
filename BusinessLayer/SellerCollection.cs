@@ -33,7 +33,7 @@ namespace BusinessLayer
 
         #region Methods
         // Method to get sellers collection
-        public static SellerCollection GetCollection()
+        public static SellerCollection Get()
         {
             string erro = string.Empty;
 

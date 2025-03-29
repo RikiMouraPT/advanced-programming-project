@@ -1,16 +1,28 @@
 ﻿using BusinessLayer;
 using DataLayer;
+using LiveCharts;
+using LiveCharts.Wpf;
 using Sales_Dashboard.UserControls;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Sales_Dashboard
 {
     public partial class MainWindow : Window
     {
+        #region Constructors
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
+
+        #endregion
+
         #region Properties
         private EnumCategory category;
 
@@ -19,9 +31,41 @@ namespace Sales_Dashboard
             get { return category; }
             set { 
                 category = value;
-                this.UpdateInfoCardValues(category);
-                this.UpdateUserCardValues(category);
             }
+        }
+
+        private int year;
+
+        public int Year
+        {
+            get { return year; }
+            set { 
+                year = value;
+            }
+        }
+
+        private ProductCollection products;
+
+        public ProductCollection Products
+        {
+            get { return products; }
+            set { products = value; }
+        }
+
+        private SellerCollection sellers;
+
+        public SellerCollection Sellers
+        {
+            get { return sellers; }
+            set { sellers = value; }
+        }
+
+        private MonthValueCollection monthValues;
+
+        public MonthValueCollection MonthValues
+        {
+            get { return monthValues; }
+            set { monthValues = value; }
         }
 
         #endregion
@@ -61,30 +105,53 @@ namespace Sales_Dashboard
         #endregion
 
         #region Methods
-        #region InfoCards
-        public void UpdateInfoCardValues(EnumCategory category)
+        private void FillCombos()
         {
-            ProductCollection products = BusinessLayer.ProductCollection.GetCollection();
+            int endYear = DateTime.Today.Year;
+            int startYear = endYear - 2;
 
-            switch (category)
+            for (int i = startYear; i <= endYear; i++)
             {
-                case EnumCategory.Undefined:
-                    UpdateInfoCard(products, "Undefined");
-                    break;
-                case EnumCategory.Car:
-                    UpdateInfoCard(products, "Car");
-                    break;
-                case EnumCategory.Motorcycle:
-                    UpdateInfoCard(products, "Motorcycle");
-                    break;
+                yearComboBox.Items.Add(i);
             }
+
+            foreach (EnumCategory category in Enum.GetValues(typeof(EnumCategory)))
+            {
+                categoryComboBox.Items.Add(category );
+            }
+
         }
-        private void UpdateInfoCard(ProductCollection products, string category)
+
+        private void ChangeFilter()
+        {
+            if (categoryComboBox.SelectedItem != null)
+            {
+                this.Category = (EnumCategory)categoryComboBox.SelectedItem;
+            }
+
+            if (yearComboBox.SelectedItem != null)
+            {
+                this.Year = (int)yearComboBox.SelectedItem;
+            }
+
+            this.ApplyFilter();
+        }
+
+        private void ApplyFilter()
+        {
+            this.UpdateInfoCard(this.Products, this.Category, this.Year);
+            this.UpdateUserCard(this.Sellers, this.Products, this.Category, this.Year);
+            this.UpdateChart();
+        }
+
+        #region InfoCards
+        private void UpdateInfoCard(ProductCollection products, EnumCategory category, int year)
         {
             if (qntSalesInfoCard == null || salesInfoCard == null || profitInfoCard == null)
                 return;
+
             //TODO: Implementar a lógica para preencher os UserCards com os dados dos Sellers da Motorcycle+Car
-            if (category == "Undefined")
+            if (category == EnumCategory.Undefined)
             {
                 this.qntSalesInfoCard.SubTitle = "Null";
                 this.salesInfoCard.SubTitle = "Null";
@@ -92,9 +159,9 @@ namespace Sales_Dashboard
             }
             else
             {
-                int soldCount = products.Where(p => p.Category == category && p.IsSold).Count();
-                double sumSellPrice = products.Where(p => p.Category == category && p.IsSold).Sum(p => p.SellPrice);
-                double sumBuyPrice = products.Where(p => p.Category == category && p.IsSold).Sum(p => p.BuyPrice);
+                int soldCount = products.Where(p => p.Category == category.ToString() && p.Date.Year == year && p.IsSold).Count();
+                double sumSellPrice = products.Where(p => p.Category == category.ToString() && p.Date.Year == year && p.IsSold).Sum(p => p.SellPrice);
+                double sumBuyPrice = products.Where(p => p.Category == category.ToString() && p.Date.Year == year && p.IsSold).Sum(p => p.BuyPrice);
 
                 this.qntSalesInfoCard.SubTitle = soldCount.ToString();
                 this.salesInfoCard.SubTitle = "$" + sumSellPrice.ToString();
@@ -102,31 +169,16 @@ namespace Sales_Dashboard
             }
         }
         #endregion
+        
         #region UserCards
-        public void UpdateUserCardValues(EnumCategory category)
-        {
-            SellerCollection sellers = BusinessLayer.SellerCollection.GetCollection();
-            ProductCollection products = BusinessLayer.ProductCollection.GetCollection();
-
-            switch (category)
-            {
-                case EnumCategory.Undefined:
-                    UpdateUserCard(sellers, products, "Undefined");
-                    break;
-                case EnumCategory.Car:
-                    UpdateUserCard(sellers, products, "Car");
-                    break;
-                case EnumCategory.Motorcycle:
-                    UpdateUserCard(sellers, products, "Motorcycle");
-                    break;
-            }
-        }
-        private void UpdateUserCard(SellerCollection sellers, ProductCollection products, string category)
+ 
+        private void UpdateUserCard(SellerCollection sellers, ProductCollection products, EnumCategory category, int year)
         {
             if (firstUserCard == null || secondUserCard == null || thirdUserCard == null)
                 return;
+
             //TODO: Implementar a lógica para preencher os UserCards com os dados dos Sellers da Motorcycle+Car
-            if (category == "Undefined")
+            if (category == EnumCategory.Undefined)
             {
                 this.firstUserCard.Title = "Null";
                 this.firstUserCard.UpPrice = "Null";
@@ -141,29 +193,30 @@ namespace Sales_Dashboard
                 this.thirdUserCard.DownPrice = "Null";
                 return;
             }
-
-            //Pega os top 3 sellers da categoria no parametro
-            var topSellers = products
-                .Where(p => p.Category == category && p.IsSold)
-                .GroupBy(p => p.SellerId)
-                .OrderByDescending(g => g.Sum(p => p.SellPrice))
-                .Select(g => new
-                {
-                    SellerName = sellers.Where(s => s.SellerId == g.Key).Select(s => s.Name).FirstOrDefault(), //FirstOrDefault() para que retorne uma string apenas e não uma lista
-                    TotalSellValue = g.Sum(p => p.SellPrice),
-                    TotalProfitValue = g.Sum(p => p.SellPrice - p.BuyPrice)
-                })
-                .Take(3)
-                .ToList();
-
-            UserCard[] userCards = { firstUserCard, secondUserCard, thirdUserCard };
-            for (int i = 0; i < userCards.Length; i++)
+            else
             {
-                UpdateSingleUserCard(
-                    userCards[i],
-                    topSellers[i].SellerName,
-                    topSellers[i].TotalSellValue,
-                    topSellers[i].TotalProfitValue);
+                var topSellers = products
+                    .Where(p => p.Category == category.ToString() && p.Date.Year == year && p.IsSold)
+                    .GroupBy(p => p.SellerId)
+                    .OrderByDescending(g => g.Sum(p => p.SellPrice))
+                    .Select(g => new
+                    {
+                        SellerName = sellers.Where(s => s.SellerId == g.Key).Select(s => s.Name).FirstOrDefault(), //FirstOrDefault() para que retorne uma string apenas e não uma lista
+                        TotalSellValue = g.Sum(p => p.SellPrice),
+                        TotalProfitValue = g.Sum(p => p.SellPrice - p.BuyPrice)
+                    })
+                    .Take(3)
+                    .ToList();
+
+                UserCard[] userCards = { firstUserCard, secondUserCard, thirdUserCard };
+                for (int i = 0; i < userCards.Length && i < topSellers.Count; i++)
+                {
+                    UpdateSingleUserCard(
+                        userCards[i],
+                        topSellers[i].SellerName,
+                        topSellers[i].TotalSellValue,
+                        topSellers[i].TotalProfitValue);
+                }
             }
         }
         private void UpdateSingleUserCard(UserCard userCard, string sellerName, double upPrice, double downPrice)
@@ -172,36 +225,70 @@ namespace Sales_Dashboard
             userCard.UpPrice = upPrice.ToString("C2");
             userCard.DownPrice = downPrice.ToString("C2");
         }
+        public void UpdateChart()
+        {
+            if (mainChart == null)
+                return;
+
+            mainChartTitle.Text = "Monthly Sales";
+
+            var axisX = new Axis
+            {
+                Labels = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Set", "Oct", "Nov", "Dec" },
+                Separator = new LiveCharts.Wpf.Separator
+                {
+                    Step = 1,
+                }
+            };
+            mainChart.AxisX = new AxesCollection { axisX };
+
+            var axisY = new Axis
+            {
+                LabelFormatter = value => value.ToString("C2", CultureInfo.CreateSpecificCulture("en-US")),
+                Separator = new LiveCharts.Wpf.Separator
+                {
+                    Step = 5,
+                }
+            };
+            mainChart.AxisY = new AxesCollection { axisY };
+
+
+            MonthValueCollection monthValues = this.MonthValues;
+            if (monthValues == null)
+                return;
+            ChartValues<double> chartValues = new ChartValues<double>(monthValues.Select(m => m.Amount));
+
+            var lineSeries = new LineSeries
+            {
+                Values = chartValues,
+            };
+            mainChart.Series = new SeriesCollection { lineSeries };
+        }
+
         #endregion
         #endregion
 
         #region Events
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.Category = EnumCategory.Undefined;
+            this.FillCombos();
+
+            this.Products = BusinessLayer.ProductCollection.Get();
+            this.Sellers = BusinessLayer.SellerCollection.Get();
+            this.MonthValues = BusinessLayer.MonthValueCollection.Get();
+
+            this.ApplyFilter();
         }
 
-        private void ComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void categoryComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string category = categoryComboBox.SelectedItem.ToString();
+            this.ChangeFilter();
+        }
 
-            if (category.Contains("Undefined"))
-            {
-                this.Category = EnumCategory.Undefined;
-            }
-            else if (category.Contains("Car"))
-            {
-                this.Category = EnumCategory.Car;
-            }
-            else if (category.Contains("Motorcycle"))
-            {
-                this.Category = EnumCategory.Motorcycle;
-            }
+        private void yearComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            this.ChangeFilter();
         }
         #endregion
     }

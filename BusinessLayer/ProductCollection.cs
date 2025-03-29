@@ -42,7 +42,7 @@ namespace BusinessLayer
 
         #region Methods
         // Method to get product collection
-        public static ProductCollection GetCollection()
+        public static ProductCollection Get()
         {
             string erro = string.Empty;
 

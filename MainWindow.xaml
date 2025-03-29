@@ -157,12 +157,22 @@
 
                     <!--Search Textbox-->
                     <Grid Width="300" HorizontalAlignment="Right">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
 
-                        <ComboBox x:Name="categoryComboBox" Width="200" Height="30" Margin="10" SelectionChanged="ComboBox_SelectionChanged" SelectedIndex="0">
-                            <ComboBoxItem Content="Undefined"/>
-                            <ComboBoxItem Content="Car"/>
-                            <ComboBoxItem Content="Motorcycle"/>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <ComboBox x:Name="yearComboBox" Width="100" Height="30" Margin="10" SelectionChanged="yearComboBox_SelectionChanged" SelectedIndex="0" Grid.Row="0" Grid.Column="0">
                         </ComboBox>
+
+                        <ComboBox x:Name="categoryComboBox" Width="100" Height="30" Margin="10" SelectionChanged="categoryComboBox_SelectionChanged" SelectedIndex="0" Grid.Row="0" Grid.Column="1">
+                        </ComboBox>
+                        
                     </Grid>
 
                 </Grid>
@@ -185,13 +195,13 @@
             <Border Grid.Column="1" Grid.Row="2" Style="{StaticResource whiteBorder}" Margin="20 20 20 0">
                 <Grid Margin="10 5">
                     <!--Title-->
-                    <TextBlock Text="Sales Figures" Style="{StaticResource titleText}"/>
+                    <TextBlock x:Name="mainChartTitle" Text="Sales Figures" Style="{StaticResource titleText}"/>
 
                     <!--Legends-->
                     <uc:Legends HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 8 10 0" />
                     
                     <!--Chart-->
-                    <lvc:CartesianChart Grid.Row="1" Margin="5 40 0 60" LegendLocation="None">
+                    <lvc:CartesianChart x:Name="mainChart" Grid.Row="1" Margin="5 40 0 60" LegendLocation="None">
                         <lvc:CartesianChart.DataTooltip>
                             <lvc:DefaultTooltip Background="Red" Foreground="#ffffff" Opacity="0.7" BulletSize="10">
                             </lvc:DefaultTooltip>
@@ -271,7 +281,7 @@
                         <TextBlock Text="Sales Report" Style="{StaticResource titleText}"/>
 
                         <!--Chart-->
-                        <lvc:CartesianChart Grid.Row="1" Margin="0 40 0 30" LegendLocation="None">
+                        <lvc:CartesianChart x:Name="sideChart" Grid.Row="1" Margin="0 40 0 30" LegendLocation="None">
                             <lvc:CartesianChart.DataTooltip>
                                 <lvc:DefaultTooltip Background="#0074FF" Opacity="0.8" Foreground="#ffffff"/>
                             </lvc:CartesianChart.DataTooltip>
