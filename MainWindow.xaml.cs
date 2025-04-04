@@ -135,9 +135,28 @@ namespace Sales_Dashboard
 
         private void ApplyFilter()
         {
+            this.ClearUsersStackPanel();
+
             this.UpdateInfoCard(this.Products, this.Category, this.Year);
             this.UpdateUserCard(this.Sellers, this.Products, this.Category, this.Year);
             this.UpdateChart(this.Products, this.Category, this.Year);
+        }
+
+        private void ClearUsersStackPanel()
+        {
+            usersStackPanel.Children.Clear();
+            usersStackPanel.Children.Add(new TextBlock()
+            {
+                Text = "Sales List",
+                Style = (Style)FindResource("titleText")
+            });
+            usersStackPanel.Children.Add(new TextBlock()
+            {
+                Text = "This is the sales data with the most revenue for this month",
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0, 10, 0, 10),
+                Style = (Style)FindResource("secondaryText")
+            });
         }
 
         #region InfoCards
@@ -165,30 +184,14 @@ namespace Sales_Dashboard
             }
         }
         #endregion
-        
+
         #region UserCards
- 
+
         private void UpdateUserCard(SellerCollection sellers, ProductCollection products, EnumCategory category, int year)
         {
-            if (firstUserCard == null || secondUserCard == null || thirdUserCard == null)
-                return;
 
             //TODO: Implementar a lógica para preencher os UserCards com os dados dos Sellers da Motorcycle+Car
-            if (category == EnumCategory.Undefined)
-            {
-                this.firstUserCard.Title = "Null";
-                this.firstUserCard.UpPrice = "Null";
-                this.firstUserCard.DownPrice = "Null";
-
-                this.secondUserCard.Title = "Null";
-                this.secondUserCard.UpPrice = "Null";
-                this.secondUserCard.DownPrice = "Null";
-
-                this.thirdUserCard.Title = "Null";
-                this.thirdUserCard.UpPrice = "Null";
-                this.thirdUserCard.DownPrice = "Null";
-            }
-            else
+            if (category != EnumCategory.Undefined)
             {
                 var topSellers = products
                     .Where(p => p.Category == category.ToString() && p.Date.Year == year && p.IsSold)
@@ -203,22 +206,24 @@ namespace Sales_Dashboard
                     .Take(3)
                     .ToList();
 
-                UserCard[] userCards = { firstUserCard, secondUserCard, thirdUserCard };
-                for (int i = 0; i < userCards.Length && i < topSellers.Count; i++)
+                for (int i = 0; i < topSellers.Count; i++)
                 {
                     UpdateSingleUserCard(
-                        userCards[i],
                         topSellers[i].SellerName,
                         topSellers[i].TotalSellValue,
                         topSellers[i].TotalProfitValue);
                 }
             }
         }
-        private void UpdateSingleUserCard(UserCard userCard, string sellerName, double upPrice, double downPrice)
+        private void UpdateSingleUserCard(string sellerName, double upPrice, double downPrice)
         {
+            UserCard userCard = new UserCard();
+
             userCard.Title = sellerName;
             userCard.UpPrice = upPrice.ToString("C2");
             userCard.DownPrice = downPrice.ToString("C2");
+
+            usersStackPanel.Children.Add(userCard);
         }
 
         #endregion
@@ -277,11 +282,10 @@ namespace Sales_Dashboard
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             this.FillCombos();
-
             this.Products = BusinessLayer.ProductCollection.Get();
             this.Sellers = BusinessLayer.SellerCollection.Get();
-            //this.MonthValues = BusinessLayer.MonthValueCollection.Get();
 
+            //this.CreateUserCards();
             this.ApplyFilter();
         }
 
