@@ -22,6 +22,7 @@ namespace BusinessLayer
         }
 
         #endregion
+
         #region Properties
         private int monthNumber;
 

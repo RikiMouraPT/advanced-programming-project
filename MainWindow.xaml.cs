@@ -29,9 +29,7 @@ namespace Sales_Dashboard
         public EnumCategory Category
         {
             get { return category; }
-            set { 
-                category = value;
-            }
+            set { category = value; }
         }
 
         private int year;
@@ -39,9 +37,7 @@ namespace Sales_Dashboard
         public int Year
         {
             get { return year; }
-            set { 
-                year = value;
-            }
+            set { year = value; }
         }
 
         private ProductCollection products;
@@ -141,7 +137,7 @@ namespace Sales_Dashboard
         {
             this.UpdateInfoCard(this.Products, this.Category, this.Year);
             this.UpdateUserCard(this.Sellers, this.Products, this.Category, this.Year);
-            this.UpdateChart();
+            this.UpdateChart(this.Products, this.Category, this.Year);
         }
 
         #region InfoCards
@@ -191,7 +187,6 @@ namespace Sales_Dashboard
                 this.thirdUserCard.Title = "Null";
                 this.thirdUserCard.UpPrice = "Null";
                 this.thirdUserCard.DownPrice = "Null";
-                return;
             }
             else
             {
@@ -225,10 +220,17 @@ namespace Sales_Dashboard
             userCard.UpPrice = upPrice.ToString("C2");
             userCard.DownPrice = downPrice.ToString("C2");
         }
-        public void UpdateChart()
+
+        #endregion
+
+        #region Charts
+
+        public void UpdateChart(ProductCollection products, EnumCategory category, int year)
         {
             if (mainChart == null)
                 return;
+
+            this.MonthValues = BusinessLayer.MonthValueCollection.Get(products, category, year);
 
             mainChartTitle.Text = "Monthly Sales";
 
@@ -247,7 +249,7 @@ namespace Sales_Dashboard
                 LabelFormatter = value => value.ToString("C2", CultureInfo.CreateSpecificCulture("en-US")),
                 Separator = new LiveCharts.Wpf.Separator
                 {
-                    Step = 5,
+                    Step = 10000,
                 }
             };
             mainChart.AxisY = new AxesCollection { axisY };
@@ -256,6 +258,7 @@ namespace Sales_Dashboard
             MonthValueCollection monthValues = this.MonthValues;
             if (monthValues == null)
                 return;
+
             ChartValues<double> chartValues = new ChartValues<double>(monthValues.Select(m => m.Amount));
 
             var lineSeries = new LineSeries
@@ -266,6 +269,7 @@ namespace Sales_Dashboard
         }
 
         #endregion
+
         #endregion
 
         #region Events
@@ -276,7 +280,7 @@ namespace Sales_Dashboard
 
             this.Products = BusinessLayer.ProductCollection.Get();
             this.Sellers = BusinessLayer.SellerCollection.Get();
-            this.MonthValues = BusinessLayer.MonthValueCollection.Get();
+            //this.MonthValues = BusinessLayer.MonthValueCollection.Get();
 
             this.ApplyFilter();
         }

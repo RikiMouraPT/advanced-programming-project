@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,20 +20,19 @@ namespace BusinessLayer
         }
         #endregion
         #region Methods
-        public static MonthValueCollection Get(int year)
+        public static MonthValueCollection Get(ProductCollection products, EnumCategory category, int year)
         {
-            ProductCollection products = ProductCollection.Get();
-            SellerCollection sellers = SellerCollection.Get();
 
             MonthValueCollection monthValues = new MonthValueCollection();
+            if (products == null)
+                return monthValues;
 
-            //TODO: Implement the logic to get the month values
             for (int i = 1; i <= 12; i++)
             {
                 MonthValue monthValue = new();
 
                 monthValue.MonthNumber = i;
-                monthValue.Amount = 253 + i;
+                monthValue.Amount = products.GetAmount(category, year, i);
 
                 monthValues.Add(monthValue);
             }

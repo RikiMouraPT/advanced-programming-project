@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sales_Dashboard
+namespace BusinessLayer
 {
     public enum EnumCategory
     {

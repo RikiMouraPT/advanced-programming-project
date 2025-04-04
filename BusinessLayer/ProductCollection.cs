@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Data;
+using System.Linq;
 
 namespace BusinessLayer
 {
@@ -51,6 +52,11 @@ namespace BusinessLayer
             ProductCollection products = new ProductCollection(dataTable);
 
             return products;
+        }
+
+        internal double GetAmount(EnumCategory category, int year, int month)
+        {
+            return this.Where(p => p.Category == category.ToString() && p.Date.Year == year && p.Date.Month == month && p.IsSold).Sum(p => p.SellPrice);
         }
         #endregion
     }
